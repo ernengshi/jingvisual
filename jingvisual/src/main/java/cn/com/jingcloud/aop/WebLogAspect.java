@@ -28,6 +28,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Order(1)
 public class WebLogAspect {
 
+
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Pointcut("execution(public * cn.com.jingcloud.web..*.*(..))")
