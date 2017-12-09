@@ -1,0 +1,35 @@
+<html  xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <link rel="stylesheet" type="text/css" th:href="@{/css/theme.css}" />
+        <link rel='stylesheet' th:href='@{/webjars/bootstrap/3.3.6/css/bootstrap.css}'/>
+        <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script type="text/javascript" th:src="@{/webjars/bootstrap/3.3.6/js/bootstrap.js}"></script>
+
+        <title>京华科讯运维可视化展示平台</title>
+    </head>
+    <body>
+        <div class="progress">
+            <div id="prog" class="progress-bar" style="width:0%;" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" ></div>
+        </div>
+        <script th:inline="JavaScript">
+            /*<![CDATA[*/
+
+            function show() {
+//              $("#prog").removeClass("progress-bar-danger");
+                $(".progress").css("height", "60px");//高度
+//                $(".prog").css("height", "60px");//高度
+                $("#prog").addClass("progress-bar-warning");
+                $("#prog").css("width", "50%").text("50%");
+
+            }
+
+            $(function () {
+                show();
+            });
+            /*]]>*/
+        </script>
+    </body>
+
+
+</html>

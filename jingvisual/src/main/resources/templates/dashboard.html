@@ -1,0 +1,263 @@
+<html  xmlns="http://www.w3.org/1999/xhtml"
+
+       xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title >资源状态展示</title>
+        <link th:href="@{/css/jquery.circliful.css}" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/jquery.js}"></script>
+        <script th:src="@{/js/lib/script/jquery.circliful.min.js}"></script>
+        <script th:inline="JavaScript">
+            /*<![CDATA[*/
+            $(function () {
+                getShow();
+//                setInterval(refresh, 5000);
+            });
+
+            function refresh() {
+                location.reload();
+            }
+
+            function parseData(value) {
+                if (value.indexOf(".") != -1) {
+                    var numindex = parseInt(value.indexOf("."));
+                    var head = value.substring(0, numindex);
+                    return head;
+                } else {
+                    return parseInt(value);
+                }
+            }
+
+            function convertHz(hz) {
+                if (hz == null)
+                    return "";
+                if (hz < 1000) {
+                    return hz + " MHz";
+                } else {
+                    return (hz / 1000).toFixed(2) + " GHz";
+                }
+            }
+
+            function convertBytes(bytes) {
+                if (bytes < 1024 * 1024) {
+                    return (bytes / 1024).toFixed(2) + " KB";
+                } else if (bytes < 1024 * 1024 * 1024) {
+                    return (bytes / 1024 / 1024).toFixed(2) + " MB";
+                } else if (bytes < 1024 * 1024 * 1024 * 1024) {
+                    return (bytes / 1024 / 1024 / 1024).toFixed(2) + " GB";
+                } else {
+                    return (bytes / 1024 / 1024 / 1024 / 1024).toFixed(2) + " TB";
+                }
+            }
+
+            function getShow() {
+                /*
+                 var urlParam = "http://192.168.37.250:8096/client/api?command=listZones%26response=json";
+                 var zoneId;
+                 $.ajax({
+                 url : "showZone?urlParam=" + urlParam,
+                 dataType : "json",
+                 async : false,
+                 success : function(json) {
+                 zoneId = json.listzonesresponse.zone[0].id;
+                 }
+                 });
+                 */
+
+                var zoneid = /*[[${zoneid}]]*/ '2b7fd60c-62a3-4e31-bba6-18e30835a822';
+                var ip = /*[[${ip}]]*/ '192.168.37.250';
+                var port = /*[[${port}]]*/ '8096';
+                //var urlParam = "http://192.168.211.252:8096/client/api?command=listCapacity%26response=json%26zoneid=d1f7f059-beaf-4112-80db-f5e7b09f99d7";
+                var urlParam = "http://" + ip + ":" + port + "/client/api?command=listCapacity%26response=json&zoneid=" + zoneid;
+                $.ajax({
+                    url: "/showZone?urlParam=" + urlParam,
+                    dataType: "json",
+                    async: false,
+                    success: function (json) {
+                        var capacities = json.listcapacityresponse.capacity;
+                        var ordercapacities = new Array(capacities.length);
+                        var orderothers = [];
+                        $(capacities).each(function (index) {
+                            if (this.type == 3) {
+                                capacities.splice(index, 1);
+                                ordercapacities = new Array(capacities.length - 1);
+                            }
+                        });
+
+                        $(capacities).each(function (index) {
+                            if (this.type == 1) {
+                                //内存
+                                ordercapacities[0] = this;
+                            } else if (this.type == 0) {
+                                //CPU
+                                ordercapacities[1] = this;
+                            } else if (this.type == 2) {
+                                //主存储
+                                ordercapacities[2] = this;
+                            } else if (this.type == 6) {
+                                //辅助存储
+                                ordercapacities[3] = this;
+                            } else if (this.type == 4) {
+                                //公用IP地址
+                                ordercapacities[4] = this;
+                            } else if (this.type == 5) {
+                                //管理类IP地址
+                                ordercapacities[5] = this;
+                            } else if (this.type == 7) {
+                                //VLAN
+                                ordercapacities[6] = this;
+                            } else if (this.type == 8) {
+                                //直接IP
+                                ordercapacities[7] = this;
+                            }
+                        });
+
+                        //cpu
+                        var cpuused = parseData(ordercapacities[0].percentused);
+                        var cpucapacityused = convertHz(ordercapacities[0].capacityused);
+                        var cpucapacitytotal = convertHz(ordercapacities[0].capacitytotal);
+                        $('#cpuStart').attr("data-text", cpuused + "%");
+                        $('#cpuStart').attr("data-percent", cpuused);
+                        $('#cpuSpan').html(cpucapacityused + " / " + cpucapacitytotal);
+                        $('#cpuStart').circliful();
+
+                        //内存//没有四舍五入
+                        var memoryused = parseData(ordercapacities[1].percentused);
+                        var memorycapacityused = convertBytes(ordercapacities[1].capacityused);
+                        var memorycapacitytotal = convertBytes(ordercapacities[1].capacitytotal);
+                        $('#memoryStart').attr("data-text", memoryused + "%");
+                        $('#memoryStart').attr("data-percent", memoryused);
+                        $('#memorySpan').html(memorycapacityused + " / " + memorycapacitytotal);
+                        $('#memoryStart').circliful();
+
+                        //主存储
+                        var mainStore = parseData(ordercapacities[2].percentused);
+                        var mainStorecapacityused = convertBytes(ordercapacities[2].capacityused);
+                        var mainStorecapacitytotal = convertBytes(ordercapacities[2].capacitytotal);
+                        $('#mainStoreStart').attr("data-text", mainStore + "%");
+                        $('#mainStoreStart').attr("data-percent", mainStore);
+                        $('#mainStoreSpan').html(mainStorecapacityused + " / " + mainStorecapacitytotal);
+                        $('#mainStoreStart').circliful();
+
+                        //辅助存储
+                        var auxiliaryStore = parseData(ordercapacities[3].percentused);
+                        var auxiliaryStorecapacityused = convertBytes(ordercapacities[3].capacityused);
+                        var auxiliaryStorecapacitytotal = convertBytes(ordercapacities[3].capacitytotal);
+                        $('#auxiliaryStoreStart').attr("data-text", auxiliaryStore + "%");
+                        $('#auxiliaryStoreStart').attr("data-percent", auxiliaryStore);
+                        $('#auxiliaryStoreSpan').html(auxiliaryStorecapacityused + " / " + auxiliaryStorecapacitytotal);
+                        $('#auxiliaryStoreStart').circliful();
+
+                        //公用IP地址
+                        var publicIpused = parseData(ordercapacities[4].percentused);
+                        var publicipcapacityused = ordercapacities[4].capacityused;
+                        var publicipcapacitytotal = ordercapacities[4].capacitytotal;
+                        $('#publicIPStart').attr("data-text", publicIpused + "%");
+                        $('#publicIPStart').attr("data-percent", publicIpused);
+                        $('#publicIPSpan').html(publicipcapacityused + " / " + publicipcapacitytotal);
+                        $('#publicIPStart').circliful();
+
+                        //管理类IP地址
+                        var managerIpused = parseData(ordercapacities[5].percentused);
+                        var managerIpcapacityused = ordercapacities[5].capacityused;
+                        var managerIpcapacitytotal = ordercapacities[5].capacitytotal;
+                        $('#managerIPStart').attr("data-text", managerIpused + "%");
+                        $('#managerIPStart').attr("data-percent", managerIpused);
+                        $('#managerIPSpan').html(managerIpcapacityused + " / " + managerIpcapacitytotal);
+                        $('#managerIPStart').circliful();
+
+                        //VLAN  
+                        var vlanused = ordercapacities[6].percentused;
+                        var vlancapacityused = ordercapacities[6].capacityused;
+                        var vlancapacitytotal = ordercapacities[6].capacitytotal;
+                        $('#vlanStart').attr("data-text", vlanused + "%");
+                        $('#vlanStart').attr("data-percent", vlanused);
+                        $('#vlanSpan').html(vlancapacityused + " / " + vlancapacitytotal);
+                        $('#vlanStart').circliful();
+
+                        //直接IP
+                        var directIpused = parseData(ordercapacities[7].percentused);
+                        var directIpcapacityused = ordercapacities[7].capacityused;
+                        var directIpcapacitytotal = ordercapacities[7].capacitytotal;
+                        $('#directIPStart').attr("data-text", directIpused + "%");
+                        $('#directIPStart').attr("data-percent", directIpused);
+                        $('#directIPSpan').html(directIpcapacityused + " / " + directIpcapacitytotal);
+                        $('#directIPStart').circliful();
+                    }
+                });
+            }
+            /*]]>*/
+        </script>
+
+    </head>
+    <body>
+        <center>
+            <br/><br/>
+            <h1 th:inline="text">物理主机[[${ip}]]  数据中心[[${zoneid}]]资源状态</h1>
+            <br><br/><br/>
+                <table width="80%">
+                    <tr align="center">
+                        <td>
+                            <div id="cpuStart" data-dimension="200" data-text="0%" data-info="CPU" data-width="30" 
+                                 data-fontsize="40" data-percent="0" data-fgcolor="#61a9dc" data-bgcolor="#eee" data-fill="#ddd">
+                            </div>
+                            <span id="cpuSpan" style="font-size: 20px"></span>
+                        </td>
+                        <td>
+                            <div id="memoryStart" data-dimension="200" data-text="0%" data-info="内存" data-width="30" 
+                                 data-fontsize="38" data-percent="35" data-fgcolor="#61a9dc" data-bgcolor="#eee" data-fill="#ddd">
+                            </div>
+                            <span id="memorySpan" style="font-size: 20px"></span>
+                        </td>
+                        <td>
+                            <div id="mainStoreStart" data-dimension="200" data-text="0%" data-info="主存储" data-width="30" 
+                                 data-fontsize="38" data-percent="35" data-fgcolor="#61a9dc" data-bgcolor="#eee" data-fill="#ddd">
+                            </div>
+                            <span id="mainStoreSpan" style="font-size: 20px"></span>
+                        </td>
+                        <td>
+                            <div id="auxiliaryStoreStart" data-dimension="200" data-text="0%" data-info="辅助存储" data-width="30" 
+                                 data-fontsize="38" data-percent="35" data-fgcolor="#61a9dc" data-bgcolor="#eee" data-fill="#ddd">
+                            </div>
+                            <span id="auxiliaryStoreSpan" style="font-size: 20px"></span>
+                        </td>
+                    </tr>
+                    <tr height="80">
+                        <td></td><td></td><td></td><td></td>
+                    </tr>
+                    <tr align="center">	
+                        <td>
+                            <div id="publicIPStart" data-dimension="200" data-text="0%" data-info="公用IP地址" data-width="30" 
+                                 data-fontsize="38" data-percent="35" data-fgcolor="#61a9dc" data-bgcolor="#eee" data-fill="#ddd">
+                            </div>
+                            <span id="publicIPSpan" style="font-size: 20px"></span>
+                        </td>
+                        <td>
+                            <div id="managerIPStart" data-dimension="200" data-text="0%" data-info="管理类IP地址" data-width="30" 
+                                 data-fontsize="38" data-percent="35" data-fgcolor="#61a9dc" data-bgcolor="#eee" data-fill="#ddd">
+                            </div>
+                            <span id="managerIPSpan" style="font-size: 20px"></span>
+                        </td>
+                        <td>
+                            <div id="vlanStart" data-dimension="200" data-text="0%" data-info="VLAN" data-width="30" 
+                                 data-fontsize="38" data-percent="35" data-fgcolor="#61a9dc" data-bgcolor="#eee" data-fill="#ddd">
+                            </div>
+                            <span id="vlanSpan" style="font-size: 20px"></span>
+                        </td>
+                        <td>
+                            <div id="directIPStart" data-dimension="200" data-text="0%" data-info="直接IP" data-width="30" 
+                                 data-fontsize="38" data-percent="35" data-fgcolor="#61a9dc" data-bgcolor="#eee" data-fill="#ddd">
+                            </div>
+                            <span id="directIPSpan" style="font-size: 20px"></span>
+                        </td>
+                    </tr>
+                </table>
+        </center>
+        <br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
+                <center>
+                    <div th:replace="/common/_dashboard :: dashboard" ></div>
+                </center>
+
+    </body>
+</html>

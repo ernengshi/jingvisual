@@ -1,0 +1,308 @@
+<zone th:fragment="_vm_chart">
+    <script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/jquery.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
+
+    <!--树形的机构和点击事件-->
+    <script type="text/javascript" th:src="@{/webjars/zTree/js/jquery.ztree.core.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/zTree/js/jquery.ztree.excheck.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/zTree/js/jquery.ztree.exedit.js}"></script>
+    <!--树形结构的展开和关闭-->
+    <script type="text/javascript" th:src="@{/js/lib/zrm/tc_vm_tree_tool.js}"></script>
+    <script type="text/javascript" th:src="@{/js/lib/zrm/api_data/vmTree.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/chartjs/Chart.bundle.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/lib/utils.js}"></script>
+    <!--树形的机构和点击事件-->
+
+
+
+    <div class="rightcontent row device-tree is-open">
+        <!--left tree-->
+        <div class="col-lg-2 col-md-3 col-sm-3 col-xs-3 clear-padding devicetree">
+            <div class="head-tree">
+                <span class="head-tree-title">
+                    <i class="glyphicon glyphicon-envelope"></i>
+                    请选择区域
+                </span>
+                <span  class="head-tree-search"><i class="glyphicon glyphicon-search  searchdata"></i></span>
+            </div>
+            <div class="searchtree hidden">
+                <input type="input" name="searchtree" id="searchtree"/>
+            </div>
+            <ul id="devicetree" class="ztree"></ul>
+        </div>
+        <!--left tree-->
+
+        <div class="col-lg-10 col-md-9 col-sm-9 col-xs-9 clear-padding devicecontent">
+            <div class="custom-height deviceinfocontent">
+                <div  class="device-info-content">
+                    <div class="tree-breadcrumb">
+                        <span id="vm_info_title">虚拟机资源曲线图</span>
+
+                    </div>
+                    <div id="vm_info_content" class="device-info">
+                        <div class="vmresource"> 
+                            <canvas id="canvas_vm_cpu" height="200px"></canvas>
+                        </div> 
+                        <div class="vmresource"> 
+                            <canvas id="canvas_vm_mem" height="200px"></canvas>
+                        </div> 
+                        <div class="vmresource"> 
+                            <canvas id="canvas_vm_network" height="200px"></canvas>
+                        </div> 
+                    </div>
+                    <i class="glyphicon glyphicon-arrow-left icon-posation"></i>
+                </div>
+            </div>
+            <!-- vm map tree ends -->
+        </div>
+    </div>
+
+    <script th:inline="JavaScript">
+        /*<![CDATA[*/
+
+        window.chartColors = {
+            red: 'rgb(255, 99, 132)',
+            orange: 'rgb(255, 159, 64)',
+            yellow: 'rgb(255, 205, 86)',
+            green: 'rgb(75, 192, 192)',
+            blue: 'rgb(54, 162, 235)',
+            purple: 'rgb(153, 102, 255)',
+            grey: 'rgb(201, 203, 207)',
+            violet: 'rgb(238, 130, 238)'
+        };
+
+        function drawVmCpuChart(timeArr, data) {
+//            var cpu = ["28.28", "28.28", "28.28", "28.28", "28.28", "28.28", "28.28", "28.28", "28.28", "28.28", "28.28", "28.28"];
+            var config = {
+                type: 'line',
+                data: {
+                    labels: timeArr,
+                    datasets: [
+                        {
+                            label: "CPU",
+                            backgroundColor: window.chartColors.red,
+                            borderColor: window.chartColors.red,
+                            data: data,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'CPU周综合统计'
+                    },
+                    tooltips: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    hover: {
+                        mode: 'nearest',
+                        intersect: true
+                    },
+                    scales: {
+                        xAxes: [{
+                                display: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: '日期'
+                                }
+                            }],
+                        yAxes: [{
+                                display: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: '百分比 %'
+                                }
+                            }]
+                    }
+                }
+            };
+
+            var ctx = document.getElementById("canvas_vm_cpu").getContext("2d");
+            window.myLine = new Chart(ctx, config);
+
+        }
+
+        function drawVmMemChart(timeArr, data) {
+//            var cpu = ["28.28", "28.28", "28.28", "28.28", "28.28", "28.28", "28.28", "28.28", "28.28", "28.28", "28.28", "28.28"];
+            var config = {
+                type: 'line',
+                data: {
+                    labels: timeArr,
+                    datasets: [
+                        {
+                            label: "内存",
+                            backgroundColor: window.chartColors.blue,
+                            borderColor: window.chartColors.blue,
+                            data: data,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: '内存周综合统计'
+                    },
+                    tooltips: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    hover: {
+                        mode: 'nearest',
+                        intersect: true
+                    },
+                    scales: {
+                        xAxes: [{
+                                display: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: '日期'
+                                }
+                            }],
+                        yAxes: [{
+                                display: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: '百分比 %'
+                                }
+                            }]
+                    }
+                }
+            };
+
+            var ctx = document.getElementById("canvas_vm_mem").getContext("2d");
+            window.myLine = new Chart(ctx, config);
+
+        }
+
+        function drawVmNetWorkChart(timeArr, networkkbsread, networkkbswrite) {
+            var config = {
+                type: 'line',
+                data: {
+                    labels: timeArr,
+                    datasets: [
+                        {
+                            label: "网络读速",
+                            backgroundColor: window.chartColors.orange,
+                            borderColor: window.chartColors.orange,
+                            data: networkkbsread,
+                            fill: false
+                        },
+                        {
+                            label: "网络写速",
+                            backgroundColor: window.chartColors.violet,
+                            borderColor: window.chartColors.violet,
+                            data: networkkbswrite,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: '网络读/写周综合统计'
+                    },
+                    tooltips: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    hover: {
+                        mode: 'nearest',
+                        intersect: true
+                    },
+                    scales: {
+                        xAxes: [{
+                                display: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: '日期'
+                                }
+                            }],
+                        yAxes: [{
+                                display: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: '大小(byte)'
+                                }
+                            }]
+                    }
+                }
+            };
+
+            var ctx = document.getElementById("canvas_vm_network").getContext("2d");
+            window.myLine = new Chart(ctx, config);
+
+        }
+
+
+        function getVmChartInfo(vmId) {
+            $.ajax({
+                url: "/vm/" + vmId + "/week",
+                dataType: "json",
+                async: true,
+                success: function (json) {
+//cpuused
+                    var timeArr = json.time;
+                    var cpuused = json.cpuused;
+                    var memuse = json.memuse;
+                    var networkkbswrite = json.networkkbswrite;
+                    var networkkbsread = json.networkkbsread;
+//                    $("#vm_info_title").html("虚拟机资源曲线图");
+//                    $("#vm_info_content").html('');
+//                    alert(json)
+                    var cpu_html =
+//                            '<div class="device-chart-title">' +
+//                            '<span class="boder-icon">虚拟机CPU周使用率</span>' +
+//                            '</div> ' +
+                            '<div class="vmresource"> ' +
+                            '<canvas id="canvas_vm_cpu" height="200px"></canvas>' +
+                            '</div>';
+
+                    var mem_html =
+//                            '<div class="device-chart-title">' +
+//                            '<span class="boder-icon">虚拟机内存周使用率</span>' +
+//                            '</div>' +
+                            '<div class="vmresource"> ' +
+                            '<canvas id="canvas_vm_mem" height="200px"></canvas>' +
+                            '</div>';
+
+                    var network_html =
+//                            '<div class="device-chart-title">' +
+//                            '<span class="boder-icon">虚拟机网卡周使用率</span>' +
+//                            '</div> ' +
+                            '<div class="vmresource"> ' +
+                            '<canvas id="canvas_vm_network" height="200px"></canvas>' +
+                            '</div>';
+//                    $("#vm_info_content").html(cpu_html + mem_html + network_html);
+
+                    drawVmCpuChart(timeArr, cpuused);
+                    drawVmMemChart(timeArr, memuse);
+                    var networkread = new Array();
+                    var networkwrite = new Array();
+//read
+//                    $(networkkbsread).each(function (index) {
+//                        networkread.push(convertToMb(index));
+//                    });
+//write
+//                    $(networkkbswrite).each(function (index) {
+//                        networkwrite.push(convertToMb(index));
+//                    });
+                    drawVmNetWorkChart(timeArr, networkkbsread, networkkbswrite);
+                }
+            });
+
+        }
+        var vmId = [[${vmId}]];
+
+        $(function () {
+            getVmChartInfo(vmId);
+        });
+
+        /*]]>*/
+    </script>
+</zone>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8" />
+        <title>统一异常处理</title>
+    </head>
+    <body>
+        <h1>哎呀出错啦······</h1>
+        <!--http://www.ityouknow.com/springboot/2016/05/01/springboot(%E5%9B%9B)-thymeleaf%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3.html-->
+        <div th:text="${url}"></div>
+
+        <!--<div th:if="${exception.message!=null}">-->
+        <div th:text="${exception}"></div>
+        <!--</div>-->
+    </body>
+</html>

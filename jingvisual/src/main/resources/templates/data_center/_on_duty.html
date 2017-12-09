@@ -1,0 +1,96 @@
+<zone th:fragment="_on_duty">
+    <script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/jquery.js}"></script>
+    <div class="col-md-3 col-sm-3 col-xs-12 clear-padding"> 
+        <!-- durty plan starts -->  
+        <div  class="col-md-12 col-sm-12 col-xs-12">
+            <div class="table-responsive">
+                <table class="table durtytable">
+                    <div class="tableTitleColor">值&nbsp;班</div>
+                    <thead>
+                        <tr>
+                            <th>姓名</th>
+                            <th>电话</th>
+                            <th>邮箱</th></tr>
+                    </thead>
+                    <tbody  id='ondutylist'>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- durty plan ends -->
+        <!-- move pic starts -->
+        <div class="col-md-12 col-sm-12 col-xs-12clear-padding clear-padding" id="aa"> 
+            <canvas id="canvas"></canvas>
+        </div> 
+        <!-- move pic ends -->
+    </div>
+    <!-- left menu ends --> 
+    <script th:inline="JavaScript">
+        /*<![CDATA[*/
+        function fillOnDutyHtml(list) {
+            var html = '';
+            $.each(list, function (index, duty) {
+                var name = duty.name;
+                var phone = duty.phone;
+                var email = duty.email;
+                var s = '<tr class="">' +
+                        '<td>' + name + '</td>' +
+                        '<td>' + phone + '</td>' +
+                        '<td>' + email + '</td>' +
+                        '</tr>';
+                html = html + s;
+
+            });
+            $("#ondutylist").html(html)
+        }
+        var pagecount;
+        function initPageCount() {
+            $.ajax({
+                url: "/zone/onduty/1/" + pageSize,
+                dataType: "json",
+                async: false,
+                success: function (json) {
+                    pagecount = json.pageCount;
+                }
+            });
+        }
+
+        var pageSize = 4;
+        function getOndutys(pageNo) {
+
+            $.ajax({
+                url: "/zone/onduty/" + pageNo + "/" + pageSize,
+                dataType: "json",
+                async: false,
+                success: function (json) {
+//                    pagecount = json.pageCount;
+                    var list = json.resultList;
+                    fillOnDutyHtml(list);
+//                    fillOnDutyHtml(json);
+                }
+            });
+        }
+
+        var index = 1;
+        function letsGOOnduty() {
+            getOndutys(index);
+            index++;
+            if (index > pagecount) {
+                index = 1;
+            }
+
+        }
+
+        $(function () {
+            initPageCount();
+//            getOndutys(1);
+
+//            letsGO();
+//            window.setInterval(function () {
+//                return letsGO()
+//            }, 3000);
+        });
+
+        /*]]>*/
+    </script>
+</zone>

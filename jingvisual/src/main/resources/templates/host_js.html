@@ -1,0 +1,43 @@
+
+<!DOCTYPE HTML>
+<html  xmlns="http://www.w3.org/1999/xhtml"
+
+       xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8" />
+        <title>京华科讯运维可视化展示平台</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="京华科讯" />
+        <!-- The styles -->
+        <link rel='stylesheet' th:href='@{/webjars/bootstrap/css/bootstrap.css}'/>
+        <link rel="stylesheet" type="text/css" th:href="@{/css/custom-site-demo.css}"/>
+        <link rel="stylesheet" type="text/css" th:href="@{/css/custom-site.css}"/>
+        <!-- jQuery -->
+        <script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/jquery.js}"></script>
+        <!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <!-- external javascript -->
+        <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
+
+    </head>
+
+    <body>
+        <div th:include="/common/logo_time :: _logo_time" ></div>
+        <div class="ch-container">
+            <div class="row rowContainer"> 
+                <div th:include="/common/left :: _left('host')" ></div>
+                <div  class="auto-content">
+                    <div th:include="/common/navigation_dialog :: _navigation_dialog('云服务器')" ></div>
+                    <!--<iframe src="/host/_host_list" ></iframe>-->
+                    <div th:include="/host/_host_list :: _list" ></div> 
+                </div>
+            </div>
+        </div>
+        <div th:replace="/common/footer :: _footer" ></div>
+        <!--<script type="text/javascript" th:src="@{/js/lib/zrm/common.js}"></script>-->
+        <script type="text/javascript" th:src="@{/js/lib/zrm/fullscreen.js}"></script>
+    </body>
+
+</html>

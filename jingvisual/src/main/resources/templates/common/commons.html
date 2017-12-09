@@ -1,0 +1,39 @@
+<pager th:fragment="pager">
+    <link rel='stylesheet' th:href='@{/webjars/bootstrap/3.3.6/css/bootstrap.css}'/>
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+    <script th:src="@{/js/lib/jqPaginator.js}" ></script>
+    <p id="page"></p>
+    <ul class="pagination" id="pagination"></ul>
+    <script th:inline="JavaScript">
+        /*<![CDATA[*/
+
+        $(function () {
+            var path = location.pathname;
+            var flag = path.lastIndexOf("/");
+            var url = path.substring(0, flag + 1);
+            var search = location.search;
+
+            var pagecount = /*[[${page.pageCount}]]*/ 10;
+            var pageno = /*[[${page.pageNo}]]*/ 5;
+            var prev = pageno - 1;
+            var next = pageno + 1;
+            $.jqPaginator('#pagination', {
+                totalPages: pagecount,
+                visiblePages: 7,
+                currentPage: pageno,
+                first: '<li class="first"><a href="' + url + 1 + search + '">第一页</a></li>',
+                prev: '<li class="prev"><a href="' + url + prev + search + '">上一页</a></li>',
+                next: '<li class="next"><a href="' + url + next + search + '">下一页</a></li>',
+                last: '<li class="last"><a href="' + url + pagecount + search + '">最后一页</a></li>',
+                page: '<li class="page"><a href="' + url + '{{page}}' + search + '">{{page}}</a></li>',
+                onPageChange: function (num, type) {
+//                    alert(type + '：' + num);
+//                    $('#page').text(type + '：' + num);
+                }
+            });
+        });
+
+        /*]]>*/
+    </script>
+</pager>
+

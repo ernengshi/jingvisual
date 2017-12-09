@@ -1,0 +1,87 @@
+<zone th:fragment="_tc_chart">
+    <script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/jquery.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
+
+    <!--树形的机构和点击事件-->
+    <script type="text/javascript" th:src="@{/webjars/zTree/js/jquery.ztree.core.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/zTree/js/jquery.ztree.excheck.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/zTree/js/jquery.ztree.exedit.js}"></script>
+    <!--树形结构的展开和关闭-->
+
+    <script type="text/javascript" th:src="@{/js/lib/zrm/api_data/commonApi.js}"></script>
+    <!--tc树形 设置 查询-->
+    <script type="text/javascript" th:src="@{/js/lib/zrm/tc_vm_tree_tool.js}"></script>
+    <!--构建树以及地图-->
+
+    <!--初始化tc树-->
+    <script type="text/javascript" th:src="@{/js/lib/zrm/api_data/tcTree.js}"></script>
+    <!--初始化tc树-->
+
+    <script type="text/javascript" th:src="@{/webjars/chartjs/Chart.bundle.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/lib/zrm/api_data/tc_use_year_chart.js}"></script>
+
+
+    <div class="rightcontent row device-tree is-open">
+        <!-- tc map tree starts -->
+        <div class="col-lg-2 col-md-3 col-sm-3 col-xs-3 clear-padding devicetree">
+            <div class="head-tree">
+                <span class="head-tree-title">
+                    <i class="glyphicon glyphicon-envelope"></i>
+                    请选择区域
+                </span>
+                <span class="head-tree-setting"><i class="glyphicon glyphicon-cog showmethod"></i></span>
+                <span  class="head-tree-search"><i class="glyphicon glyphicon-search searchdata"></i></span>
+            </div>
+            <div class="searchtree hidden">
+                <input type="input" name="searchtree" id="searchtree"/>
+            </div> 
+            <div class="showmethodContent hidden">
+                <select>
+                    <option value="0" >地图</option>
+                    <option value="1" selected="selected">图表</option>
+                </select>
+            </div> 
+            <ul id="devicetree" class="ztree"></ul>
+        </div>
+        <div class="col-lg-10 col-md-9 col-sm-9 col-xs-9 clear-padding devicecontent">
+            <div class="custom-height deviceinfocontent">
+                <div class="device-info-content">
+                    <div class="tree-breadcrumb">
+                        <span>你选择的是：</span>
+                        <ul class="breadcrumb-custom">
+                            <li>
+                                <a href="#">福建</a>
+                            </li>
+                            <li>
+                                <a href="#">厦门</a>
+                            </li>
+                            <li>
+                                <a href="#">湖里区</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="device-info">
+                        <div class="device-chart-title">
+                            <span id="used_address_title" class="boder-icon"></span>
+                        </div>  
+                        <div id="tcUseYearChart"> 
+                            <canvas id="canvas_tcUseYearChart" height="200px"></canvas>
+                        </div>
+
+                    </div>
+                </div>
+                <i class="glyphicon glyphicon-arrow-left icon-posation"></i>
+            </div>
+        </div> 
+        <!-- tc map tree ends -->
+    </div>
+
+    <script th:inline="JavaScript">
+        /*<![CDATA[*/
+//        $(document).ready(function () {
+//            initTree();
+//            drawTcUseChart("year");
+//        });
+        /*]]>*/
+    </script>
+</zone>

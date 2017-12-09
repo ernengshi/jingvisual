@@ -1,0 +1,107 @@
+<zone th:fragment="_iaas">
+    <script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/jquery.js}"></script>
+    <script type="text/javascript" th:src="@{/js/lib/zrm/api_data/commonApi.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
+    <script type="text/javascript" th:src="@{/js/lib/zrm/platformSet.js}"></script>
+    <script type="text/javascript" th:src="@{/js/lib/zrm/api_data/iaas.js}"></script>
+    <div class="rightcontent row platform-setting">
+        <!-- mgr platform starts -->
+        <div class="col-lg-2 col-md-3 col-sm-3 col-xs-3 clear-padding">
+            <div class="iaas-setting active">Iaas平台设置</div>
+            <div class="daas-setting">Daas平台设置</div>
+        </div>
+        <div class="col-lg-10 col-md-9 col-sm-9 col-xs-9 clear-padding ">
+            <div class="platform-setting-content">
+                <div class="vertical-center xs-remove-vertical-center">
+                    <div class="setting-title col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <span class="boder-icon">Iaas平台管理</span>
+                    </div>  
+                    <div class="col-md-2 col-sm-2 col-xs-2">IP</div> 
+                    <div class="col-md-9 col-sm-9 col-xs-9">
+                        <input type="hidden" name="iaas" id="iaasId"/>
+                        <input type="input" name="iaas" id="iaasIp"/>
+                    </div>
+                    <div class="col-md-12 col-sm-12 col-xs-12 submit-btn" id="iaas-submit">提交</div> 
+                    <div class="col-md-12 col-sm-12 col-xs-12 iaas-modify-delete">
+                        <div class="col-md-2 col-sm-2 col-xs-2"></div> 
+                        <div class="col-md-3 col-sm-3 col-xs-3 submit-btn" id="iaas-modify">修改</div> 
+                        <div class="col-md-2 col-sm-2 col-xs-2"></div> 
+                        <div class="col-md-3 col-sm-3 col-xs-3 submit-btn" id="iaas-delete">删除</div> 
+                        <div class="col-md-2 col-sm-2 col-xs-2"></div> 
+                    </div> 
+                </div> 
+            </div> 
+        </div>
+    </div> 
+
+    <script th:inline="JavaScript">
+        /*<![CDATA[*/
+
+        function getIaas() {
+            var iaasData = ""
+            $.ajax({
+                url: baseUrl + "iaas",
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (json) {
+                    iaasData = json;
+                }
+            });
+            return iaasData;
+        }
+
+
+        function iaasSubmit() {
+            var iaasIp = $("#iaasIp").val();
+            $.ajax({
+                url: baseUrl + "iaas/" + iaasIp,
+                dataType: "json",
+                type: "post",
+                async: false,
+                success: function (json) {
+                    $("#iaasIp").val(json.ip);
+                    $("#iaasId").val(json.id);
+                    $("#iaas-submit").hide();
+                    $(".iaas-modify-delete").show();
+                }
+            });
+        }
+
+        function iaasModify() {
+            var iaasIp = $("#iaasIp").val();
+            var iaasId = $("#iaasId").val();
+            $.ajax({
+                url: baseUrl + "iaas/" + iaasIp + "?id=" + iaasId,
+                dataType: "json",
+                type: "put",
+                async: false,
+                success: function (json) {
+                    $("#iaasIp").val(json.ip);
+                    $("#iaasId").val(json.id);
+                    $("#iaas-submit").hide();
+                    $(".iaas-modify-delete").show();
+                }
+            });
+        }
+
+        function iaasDelete() {
+            var iaasIp = $("#iaasIp").val();
+            var iaasId = $("#iaasId").val();
+            $.ajax({
+                url: baseUrl + "iaas/" + iaasIp + "?id=" + iaasId,
+                dataType: "json",
+                type: "delete",
+                async: false,
+                success: function (json) {
+                    $("#iaasIp").val("");
+                    $("#iaasId").val("");
+                    $("#iaas-submit").show();
+                    $(".iaas-modify-delete").hide();
+                }
+            });
+        }
+
+        /*]]>*/
+    </script>
+</zone>

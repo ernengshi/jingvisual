@@ -1,0 +1,64 @@
+<zone th:fragment="_left(param)">
+    <!-- left menu starts -->
+    <div class="fix-sidebar-nav">
+        <div class="sidebar-nav">
+            <div class="nav-canvas">
+                <div class="nav-sm nav nav-stacked">
+
+                </div>
+                <ul class="nav nav-stacked main-menu">
+                    <li class="nav-header">
+                        <i class="glyphicon glyphicon-align-justify"></i>
+                        <span>全部导航</span>
+                    </li>
+                    <li>
+                        <a class="ajax-link " th:classappend="${#strings.equals(param,'zone')} ? 'active'" th:href="@{/}">
+                            <i class="glyphicon glyphicon-dashboard"></i>
+                            <span>数据中心</span>
+                        </a>
+                    </li>
+                    <li>
+                        <!--/hosts_js-->
+                        <a class="ajax-link " th:classappend="${#strings.equals(param,'host')} ? 'active'" href="/hosts/1">
+                            <i class="glyphicon glyphicon-cloud"></i>
+                            <span>云服务器</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="ajax-link " th:classappend="${#strings.equals(param,'platform')} ? 'active'" href="/platform">
+                            <i class="glyphicon glyphicon-globe"></i>
+                            <span> 管理平台</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="ajax-link " th:classappend="${#strings.equals(param,'gateway')} ? 'active'" href="/gateway">
+                            <i class="glyphicon glyphicon-road"></i>
+                            <span>接入服务</span>
+                        </a>
+                    </li>
+                    <li>
+                        <!--/tc_map-->
+                        <a class="ajax-link " th:classappend="${#strings.equals(param,'tc')} ? 'active'" href="/">
+                            <i class="glyphicon glyphicon-modal-window"></i>
+                            <span>云一体机</span>
+                        </a>
+                    </li>
+                    <li>
+                        <!--/vm_info-->
+                        <a class="ajax-link " th:classappend="${#strings.equals(param,'vm')} ? 'active'" href="/">
+                            <i class="glyphicon glyphicon-blackboard"></i>
+                            <span>虚拟桌面</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="ajax-link " th:classappend="${#strings.equals(param,'setting')} ? 'active'" href="/setting/iaas">
+                            <i class="glyphicon glyphicon-cog"></i>
+                            <span>平台设置</span>
+                        </a>
+                    </li>
+                </ul> 
+            </div>
+        </div>
+    </div>
+    <!-- left menu ends --> 
+</zone>

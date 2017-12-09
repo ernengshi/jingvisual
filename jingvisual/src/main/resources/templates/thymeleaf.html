@@ -1,0 +1,600 @@
+<!--
+文档：
+http://www.jianshu.com/p/a7056b023df0
+概述：
+Thymeleaf 常用属性 http://www.cnblogs.com/hjwublog/p/5051732.html
+在HTML5 中使用thymeleaf 中报错了
+需要去掉 <!DOCTYPE> 而要使用<!DOCTYPE HTML>
+
+渲染与这个冲突，这是它一个bug
+
+-->
+<!DOCTYPE HTML>
+<html  xmlns="http://www.w3.org/1999/xhtml"
+
+       xmlns:th="http://www.thymeleaf.org">
+    <head lang="en">
+        <meta charset="UTF-8" />
+        <title>thymeleaf标签学习</title>
+        <!--引入jquery资源时候 static目录不需要写出来-->
+
+        <!--<script type="text/javascript" th:src="@{/js/lib/jquery/jquery-1.4.4.min.js}"></script>-->
+        <script type="text/javascript" th:src="@{/webjars/jquery/3.2.1/jquery.min.js}"></script>
+        <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/demo.css}">
+
+    </head>
+    <body>
+        <!--        可以看出获取变量值用$符号,对于javaBean的话使用变量名.属性名方式获取,这点和EL表达式一样.
+        
+                另外$表达式只能写在th标签内部,不然不会生效,上面例子就是使用th:text标签的值替换p标签里面的值,至于p里面的原有的值只是为了给前端开发时做展示用的.这样的话很好的做到了前后端分离.-->
+        <h1 th:text="${host}">Hello World</h1>
+
+
+        <!--2.引入URL-->
+        <!--类似的标签有:th:href和th:src-->
+        <a th:href="@{http://blog.csdn.net/u012706811}">绝对路径</a>
+        <a th:href="@{/}">相对路径</a>
+        <a th:href="@{css/bootstrap.min.css}">Content路径,默认访问static下的css文件夹</a>
+        <a href="#" th:href="@{/}">返回首页</a> <br/>
+        <a href="#" th:href="@{/thymeleaf/demo1}">去 demo1 页面</a> <br/>
+        <!-- 会生成 url: http://localhost:8888/demo/thymeleaf/demo1?username=赵波 -->
+        <a href="#" th:href="@{/thymeleaf/demo1(username=${users[0].name})}">去 demo1 页面, 带参数</a> <br/>
+        <!-- 会生成 url: http://localhost:8888/demo/thymeleaf/demo1/2 RESTful 风格的 url -->
+        <a href="#" th:href="@{/thymeleaf/demo1/{empId}(empId=${users[1].id})}">去 demo1 页面, 带 RESTful 风格参数</a> <br/>
+
+
+
+
+        <h1>欢迎使用Spring Security!</h1>
+        <p>点击 <a th:href="@{/hello}">这里</a> 打个招呼吧</p>
+
+        <span th:if="${not #lists.isEmpty(u.name)}">
+            <span id="publishtime" th:text="${u.name}">页面数据</span>
+        </span> 
+
+        <!--国家化 #{welcome} 使用这种方式调用-->
+        <p><label th:text="#{welcome}"></label></p>
+        <!--2.2 使消息不转换 html 标签-->
+        <p th:utext="#{home.welcome}">aad</p>
+        <!--
+                3.2.1 内置基本对象
+        
+        下面是一些内置的基本对象, 可以用 # 符号直接使用
+        
+            ctx: the context object.
+            vars: the context variables.
+            locale: the context locale.
+            request: (only in Web Contexts) the HttpServletRequest object.
+            response: (only in Web Contexts) the HttpServletResponse object.
+            session: (only in Web Contexts) the HttpSession object.
+            servletContext: (only in Web Contexts) the ServletContext object.-->
+
+        country: <span th:text="${#locale.country}"></span><br/>
+        page:   <span th:text="${#httpServletRequest.getParameter('page')}"></span><br/>
+        getContextPath:   <span th:text="${#httpServletRequest.getContextPath()}"></span><br/>
+        <!--       
+        3.2.2 内置工具对象
+        
+                除了基本对象, thymeleaf 还提供了一组工具对象.
+        
+                execInfo: information about the template being processed.
+                messages: methods for obtaining externalized messages inside variables expressions, in the same way as they would be obtained using #{…} syntax.
+                uris: methods for escaping parts of URLs/URIs
+                conversions: methods for executing the configured conversion service (if any).
+                dates: methods for java.util.Date objects: formatting, component extraction, etc.
+                calendars: analogous to #dates, but for java.util.Calendar objects.
+                numbers: methods for formatting numeric objects.
+                strings: methods for String objects: contains, startsWith, prepending/appending, etc.
+                objects: methods for objects in general.
+                bools: methods for boolean evaluation.
+                arrays: methods for arrays.
+                lists: methods for lists.
+                sets: methods for sets.
+                maps: methods for maps.
+                aggregates: methods for creating aggregates on arrays or collections.
+                ids: methods for dealing with id attributes that might be repeated (for example, as a result of an iteration).
+        
+                例子, 格式化时间:
+        -->
+
+        <!-- 时间格式化 -->
+        time:<span th:text="${#dates.format(date, 'yyyy-MM-dd HH:mm:ss')}"></span><br/>
+        <!--                #strings : utility methods for String objects:
+        
+        
+        ${#strings.toString(obj)}
+        
+        // also array*, list* and set* before check
+        
+        /*
+        
+        * Check whether a String is empty (or null). Performs a trim() operation
+        
+        * Also works with arrays, lists or sets */
+        
+        ${#strings.isEmpty(name)} ${#strings.arrayIsEmpty(nameArr)} ${#strings.listIsEmpty(nameList)} ${#strings.setIsEmpty(nameSet)}
+        
+        /*
+        
+        * Perform an 'isEmpty()' check on a string and return it if false, defaulting to
+        
+        * another specified string if true.
+        
+        * Also works with arrays, lists or sets */
+        
+        ${#strings.defaultString(text,default)} ${#strings.arrayDefaultString(textArr,default)} ${#strings.listDefaultString(textList,default)} ${#strings.setDefaultString(textSet,default)}
+        
+        /*
+        
+        * Check whether a fragment is contained in a String
+        
+        * Also works with arrays, lists or sets */
+        
+        ${#strings.contains(name,'ez')} ${#strings.containsIgnoreCase(name,'ez')}
+        
+        // also array*, list* and set* // also array*, list* and set*
+        
+        /*
+        
+        * Check whether a String starts or ends with a fragment
+        
+        * Also works with arrays, lists or sets */
+        
+        ${#strings.startsWith(name,'Don')} ${#strings.endsWith(name,endingFragment)}
+        
+        /*
+        
+        * Substring-related operations
+        
+        * Also works with arrays, lists or sets */
+        
+        ${#strings.indexOf(name,frag)} ${#strings.substring(name,3,5)} ${#strings.substringAfter(name,prefix)} ${#strings.substringBefore(name,suffix)} ${#strings.replace(name,'las','ler')}
+        
+        /*
+        
+        * Append and prepend
+        
+        * Also works with arrays, lists or sets */
+        
+        ${#strings.prepend(str,prefix)} ${#strings.append(str,suffix)}
+        
+        /*
+        
+        * Change case
+        
+        * Also works with arrays, lists or sets */
+        
+        ${#strings.toUpperCase(name)}
+        
+        // also array*, list* and set* // also array*, list* and set*
+        
+        // also array*, list* and set* // also array*, list* and set* // also array*, list* and set* // also array*, list* and set* // also array*, list* and set*
+        
+        // also array*, list* and set* // also array*, list* and set*
+        
+        // also array*, list* and set*
+        
+        ${#strings.toLowerCase(name)}
+        
+        // also array*, list* and set*
+        
+        /*
+        
+        * Split and join */
+        
+        ${#strings.arrayJoin(namesArray,',')} ${#strings.listJoin(namesList,',')} ${#strings.setJoin(namesSet,',')} ${#strings.arraySplit(namesStr,',')} ${#strings.listSplit(namesStr,',')} ${#strings.setSplit(namesStr,',')}
+        
+        /*
+        
+        * Trim
+        
+        * Also works with arrays, lists or sets */
+        
+        ${#strings.trim(str)}
+        
+        /*
+        
+        * Compute length
+        
+        * Also works with arrays, lists or sets */
+        
+        ${#strings.length(str)}
+        
+        /*  Abbreviate text making it have a maximum size of
+        
+        * will be clipped and finished in "..."
+        
+        * Also works with arrays, lists or sets */
+        
+        ${#strings.abbreviate(str,10)}
+        
+        // returns String[]
+        
+        // returns List<String> // returns Set<String>
+        
+        /* Convert the first character to upper-case (and vice-versa) */
+        
+        ${#strings.capitalize(str)} // also array*, list* ${#strings.unCapitalize(str)} // also array*, list*
+        
+        /*  Convert the first character of every word to upper-case */
+        
+        ${#strings.capitalizeWords(str)} ${#strings.capitalizeWords(str,delimiters)}
+        
+        /*
+        
+        * Escape the string */
+        
+        ${#strings.escapeXml(str)} ${#strings.escapeJava(str)} ${#strings.escapeJavaScript(str)} ${#strings.unescapeJava(str)} ${#strings.unescapeJavaScript(str)}
+        
+        /*  Null-safe comparison and concatenation */
+        
+        ${#strings.equals(str,str)} ${#strings.equalsIgnoreCase(str)} ${#strings.concat(str)} ${#strings.concatReplaceNulls(str)}
+        
+        /*
+        
+        * Random */
+        
+        ${#strings.randomAlphanumeric(count)}-->
+        String:<span th:text="${#strings.toUpperCase(host)}"></span><br/>
+        String:<span th:text="${!#strings.isEmpty(host)}"></span><br/>
+         String:<span th:text="${!#strings.equals('s','ss')}"></span><br/>
+        <!--<header th:fragment="contentheader(title)" th:assert="${!#strings.isEmpty(title)}">...</header>-->
+        <!--3.3 选择变量表达式-->
+        <!--获取变量可以使用 ${...} 语法外, 还可以使用 *{...}, 称为选择变量表达式.-->
+        <p>选择变量表达式</p>
+        <div th:object="${u}">
+            <p th:text="*{name}"></p>
+        </div>
+        <p>等价的变量表达式</p>
+        <div>
+            <p th:text="${u}"></p>
+            <!-- 如果没有 "选择对象", 那么 * 和 $ 是等价的 -->
+            <p th:text="*{u.name}"></p>
+        </div>
+
+        <!-- 3.5 代码段(fragment)
+            th:insert 3.0+版本新加的
+            th:replace 2.0+ 3.0+都可用
+            th:include 这个在3.0版本已经不建议使用-->
+        <!-- :: 前面是html页面的相对路径，不需要写后缀(.html)；后面是段的名称，即th:fragment="copy" 中的copy -->
+        <div th:insert="/common/footer :: copy"></div>
+        <div th:replace="/common/footer :: copy"></div>
+        <div th:include="/common/footer :: copy2"></div>
+
+
+        <!--使用id引用-->
+        <!-- :: 前面是html名称相对路径，不需要写后缀(.html)；后面是html tag的id，id前需要加 #，这是3.0+的写法 -->
+        <!--<div th:insert="{/common/footer :: #copy-section}"></div>-->
+        <!-- 2.0+要这么写 -->
+        <div th:replace="/common/footer :: #copy-section"></div>
+
+        <!--3.6.1 文本字面量-->
+        <!--很简单, 用单引号包裹起来就是一个文本字面量了. 文本字面量可以包含任意字符, 但是如-->
+        <!--果想包含 ' , 得用 \ 进行转意.-->
+        <p th:text="'Any characters, <br>Let\'s</br> go!'"></p>
+
+        <!--3.6.2 数字字面量-->
+
+        <p>
+            今年是 <span th:text="2017"></span> <br/>
+            明年是 <span th:text="2017 + 1"></span>
+        </p>
+
+        <!--        3.6.3 布尔值字面量
+        
+        布尔值字面量直接用 true, false 就可以了.-->
+
+        <p>
+            <div th:if="${1 > 0} == true">条件是真, div 内会被解析, 内容会显示</div>
+            <div th:if="${1 > 0} == false">条件是假, 这个 div 元素不会被解析, 所以不会显示</div>
+            <div th:if="${(1 > 0) == true}">
+                == 可以放在 {} 内部, 这种情况下, 表达式计算用的是 ognl/spel 引擎. 条件是真, div 内会被解析, 内容会显示
+            </div>
+        </p>
+
+        <!--3.6.4 null 字面量-->
+
+        <div th:if="${u} != null">会显示</div>
+        <div th:if="${host != null}">用 ognl/spel 引擎, 会显示</div>
+
+        <!--3.6.5 字面量 tokens-->
+        <div th:text="content">...</div>
+        <!-- 上面就等价于 -->
+        <div th:text="'content'">...</div>
+
+        <!--3.7 连接字符串-->
+        <span th:text="'Some literal text and ' + ${u.name}"></span>
+
+        <!--        3.8 字面量替换
+        
+                使用字面量替换, 可以省去 '...' + '...' 这种麻烦. 语法是 |...|-->
+
+        <p th:text="|一共有 ${users.size()} 个部门|"></p>
+        <!-- 等价于下面 -->
+        <p th:text="'一共有 ' + ${users.size()} + ' 个部门'"></p>
+        <!--还可以混合使用-->
+        <p th:text="'一共有 ' + |${users.size()} 个部门|"></p>
+
+
+        <!--
+                3.9 算术操作符-->
+        <!--th:with 的作用是声明一个局部变量. 这个局部变量的作用域是 声明时的元素及其
+        子元素.-->
+        <div th:with="isEven = (${users.size()} % 2 == 0)"></div>
+        <!-- 也可以包含在 {} 内, 那么 {} 内的整体就是一个 ognl/spel 表达式, 由 ognl/spel 引擎负责计算 -->
+        <div th:with="isOdd = ${users.size() % 2 == 1}">
+            <span th:if="${isOdd}">是奇数</span>
+            <span th:if="!${isOdd}">是偶数</span>
+        </div>
+        <!--
+        3.10 比较与相等操作符-->
+
+        <!-- >, <, 必须转意才能用 -->
+        <!--        
+        eq -- equal ==
+        ne -- not eq !=
+        gt -- great >
+        ge -- g&e >=
+        lt -- little <
+        le -- l&e <= -->
+        <div th:if="${users.size()} &gt; 1">
+            <span th:text="|部门数量是 ${users.size()}|"></span>
+        </div>
+        <!-- 可以用 gt, lt, ge, le 来代替, 这种比较好 -->
+        <div th:if="${users.size()} le 1">
+            <span>至少有 3 个部门</span>
+        </div>
+        <!--        3.11 条件表达式与默认表达式
+        
+                条件表达式由 3 个部分组成, condition, then, else. 每个部分自身又是一个表达式, 即
+                它们分别可以用变量(${...}, *{...}), 消息(#{...}), URLs(@{...}), 字面量等来
+                表示.-->
+
+        <!-- else 部分可以省略, 这种情况下, 如果条件为 false, null 值会被返回 -->
+        <p th:class="${users[0].id % 2 == 0}? 'even'" th:text="${users[0].name}"></p>
+        <p th:class="${users[1].id % 2 == 0}? 'even': 'odd'" th:text="${users[1].name}"></p>
+        <p th:class="${users[2].id % 2 == 0}? 'even': 'odd'" th:text="${users[2].name}"></p>
+
+        <!-- ?: 默认表达式 -->
+        <span th:text="${users[0].getName()}?: '没有指定性别'"></span> <br/>
+        <span th:text="${users[2].getName()}?: '没有指定邮箱'"></span> <br/>
+
+        <!-- 可以嵌套混合, 嵌套的话用 () 包起来 -->
+        <span th:text="(${users[0].getId()} == 1 ? '男': '女')?: '没有指定性别'"></span>
+
+        <!--                
+        3.12 No-Op 操作符(_)
+        
+                        No-Op 操作符指明期待的表达式结果不做任何事情. 比如说 th:text 中最后计算结果是 _
+                        那么 th:text 元素根本就不会生成.
+        -->
+
+        <p th:text="_">这里的内容不会被 th:text 替换</p>
+        <p th:text="${users[0].name}?: _">没有指定电子邮箱</p>
+
+        <!--4.1 设置任意属性 th:attr
+        
+        可以用 th:attr 来设置任意属性.-->
+
+        <!-- 替换 action 属性 -->
+        <!--比如已经用过的 th:href, th:text, th:value, th:action ...-->
+        <form action="#" th:attr="action=@{/suscribe}">
+            <input type="text" name="name"/>
+            <input type="text" name="gender"/>
+            <input type="text" name="birthday"/>
+            <input type="text" name="email"/>
+            <!-- todo select departments -->
+            <!-- 一次替换多个属性值 1) submit 按钮的 value 属性; 2) class 属性  -->
+            <input type="submit" value="Submit" th:attr="value=#{form.submit}, class='sep'"/>
+        </form>
+
+        <!--4.3 追加属性
+        
+        可以使用 th:attrappend, th:attrprepend 来追加(不是替换)属性值.
+        
+        这个不常用.
+        
+        但是 th:classappend 比较常用:-->
+        <p class="row" th:classappend="odd">aaaaa</p>
+        <p class="row" th:classappend="${users[0].id % 2 == 1} ? 'odd'">aaaaa</p>
+
+        <!--                                        
+        4.4 固定值布尔属性
+        
+        典型代表就是 checkbox, radio 中的 checked 属性了.
+        
+        可以使用 th:checked 来设置, 如果表达式返回 true, checked 就被设置, 返回 false,
+        checked 属性就不会加上去.-->
+
+        <form action="#" th:object="${users[0]}">
+            男 <input type="radio" name="gender" th:checked="*{id} == 1"/>
+            女 <input type="radio" name="gender" th:checked="*{id} == 0"/>
+        </form>
+
+        <!--                4.5 任意属性处理器
+        
+                        th:* 中, * 如果不是 html 中的属性, 也会当成属性加进去.
+        -->
+
+        <span th:xxx="${users[2].name}"></span>
+        <!--
+                        通过查看页面源码, 可以看到:
+        
+                        <span xxx="aa"></span>
+        -->
+
+
+        <!--
+        5. 迭代
+        5.1 迭代初步
+        使用 th:each -->
+        <!--
+        th:each 还提供了一个变量可以保存迭代状态. 用法是 th:each="emp, status: ${employees}"
+        状态变量保存了以下数据:
+        
+            index 属性, 0 开始的索引值
+            count 属性, 1 开始的索引值
+            size 属性, 集合内元素的总量
+            current 属性, 当前的迭代对象
+            even/odd 属性, boolean 类型的, 用来判断是否是偶数个还是奇数个
+            first 属性, boolean 类型, 是否是第一个
+            last 属性, boolean 类型, 是否是最后一个-->
+
+
+        <ul> 
+            <li> 
+                <span class="list">编号</span>
+                <span class="list">姓名</span> 
+                <span class="list">性别</span>
+                <span class="list">生日</span> 
+                <span class="list">部门</span> 
+                <span class="list">编辑</span> 
+                <span class="list">删除</span> 
+                <span class="list status">当前迭代状态</span> 
+            </li> 
+            <li th:each="emp, status: ${users}" th:class="${status.odd} ? 'odd': 'even'"> 
+                <span class="list" th:text="${emp.id}"></span> 
+                <span class="list" th:text="${emp.name}"></span> 
+                <span class="list" th:text="${emp.id == 1} ? '男': '女'"></span> 
+                <span class="list" th:text="${emp.password}"></span> 
+                <span class="list" th:text="${emp.name}"></span>
+                <span class="list"><a href="#">编辑</a></span>
+                <span class="list"><a href="#">删除</a></span>
+                <span class="list status" th:text="|index: ${status.index}; count: ${status.count}; size: ${status.size}; first: ${status.first}; last: ${status.last}|"></span>
+            </li>
+        </ul>
+        <!--
+        6. 控制表达式
+        6.1 if 和 unless-->
+        <div th:if="${users}">
+            todo 显示 users 列表
+        </div>
+        <div th:if="not ${users}">
+            这里不会显示
+        </div>
+
+        <!--                
+        6.2 switch 语句
+        
+            使用 th:switch 然后在子元素中 th:case 进行选择. 默认是 th:case="*".
+        -->
+
+        <div th:switch="${users.size()}">
+            <p th:case="1">1 个</p>
+            <p th:case="2">2 个</p>
+            <p th:case="3">3 个</p>
+            <p th:case="*">很多个</p>
+        </div>
+        <!--th:field-->
+        <div th:object="${u}">
+            <input type="email" th:field="*{password}" placeholder="your@email" />  
+        </div>
+        <!--               th:value
+        
+        用于标签复制，类似<option>标签的value属性。
+        
+        例如：-->
+
+        <option th:value="Adult">Adult</option>
+
+        <input  id="msggg"  th:value="${host}" />
+
+        <!--
+                                                            
+                                                            其中th:remove的参数有如下几种：
+        
+        all 删除当前标签和其内容和子标签
+        body 不删除当前标签，但是删除其内容和子标签
+        tag 删除当前标签，但不删除子标签
+        all-but-first 删除除第一个子标签外的其他子标签
+        none 啥也不干
+        当然，我们也可以通过表达式来传参，
+        <a href="/something" th:remove="${condition}? tag : none">Link text not to be removed</a>-->
+
+        <table>
+            <tr>
+                <th>NAME</th>
+                <th>PRICE</th>
+                <th>IN STOCK</th>
+                <th>COMMENTS</th>
+            </tr>
+            <tr th:each="user, status: ${users}" th:class="${status.odd}? 'odd'">
+                <td th:text="${user.name}">Onions</td>
+                <td th:text="${user.id}">2.41</td>
+                <td th:text="${user.password}">yes</td>
+                <td>
+                    <span th:text="${user.id}">2</span> comment/s
+                    <a href="comments.html" 
+                       th:href="@{/product/comments(prodId=${user.id})}" 
+                       th:unless="${#lists.isEmpty(user.name)}">view</a>
+                </td>
+            </tr>
+            <tr class="odd" th:remove="all">
+                <td>Blue Lettuce</td>
+                <td>9.55</td>
+                <td>no</td>
+                <td>
+                    <span>0</span> comment/s
+                </td>
+            </tr>
+            <tr th:remove="tag">
+                <td>Mild Cinnamon</td>
+                <td>1.99</td>
+                <td>yes</td>
+                <td>
+                    <span>3</span> comment/s
+                    <a href="comments.html">view</a>
+                </td>
+            </tr>
+        </table>
+
+        <!--       
+        
+        
+        /*[[${session.user.name}]]*/在thymeleaf解释器解析代码时会解析里面的[[${u.name}]]
+        加载静态页时会解析注释后面的语句 var username = 'Sebastian';
+        
+        Tips: js内联代码中需要加入/*<![CDATA[*/    ......    /*]]>*/代码块，
+        thymeleaf才能正确解析一些运算符(<等)和操作符号&/&&等。
+       
+        
+        -->
+        <script th:inline="JavaScript">
+            /*<![CDATA[*/
+
+            var username = [[${u.name}]];
+            var size = /*[[${u.id}]]*/ 0;
+            //alert(username);
+            console.log(username + " --- " + size);
+
+            /*]]>*/
+
+
+//(1)javascript附加代码  web启动才会有效
+//语法：/*[+   +]*/ 
+
+
+
+            /*[+
+             var msg  = 'This is a working application';
+             +]*/
+
+
+            console.log(msg);
+
+
+//(2)javascript移除代码  web 不 启动才会有效（静态html）
+//语法：/*[- */    /* -]*/
+
+
+
+            /*[- */
+            var msg2 = 'This is a non-working template';
+            /* -]*/
+
+            console.log(msg2);
+
+
+        </script>
+    </body>
+</html>

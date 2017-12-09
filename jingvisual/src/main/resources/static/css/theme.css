@@ -1,0 +1,146 @@
+@charset "utf-8";
+/* CSS Document */
+/*body {
+	background-color: #1D1F22;
+	margin: 0;
+	padding: 0;
+}*/
+
+.time {
+	text-align: right;
+	color: #FFF;
+	font-family: "Microsoft YaHei";
+	font-size: 15px;
+}
+
+.nav_text {
+	text-align: right;
+	color: #FFF;
+	font-family: "Microsoft YaHei";
+	font-size: 14px;
+}
+
+.nav_text_slp {
+	text-align: center;
+	color: #00C1DE;
+	font-family: "Microsoft YaHei";
+	font-size: 14px;
+}
+
+.vchart_01_title {
+	color: #FFF;
+	font-family: "Microsoft YaHei";
+	font-size: 14px;
+	padding-left: 14px;
+}
+
+.vchart_01_foot {
+	color: #FFF;
+	font-family: "Microsoft YaHei";
+	font-size: 12px;
+	padding-right: 14px;
+}
+
+.vc_title_01 {
+	color: #FFF;
+	font-family: "Microsoft YaHei";
+	font-size: 15px;
+	padding-left: 12px;
+}
+
+.main_foot {
+	color: #FFF;
+	font-family: Arial;
+	font-size: 10px;
+	padding-right: 30px;
+}
+
+.cs_host_name {
+	color: #FFF;
+	font-family: "Microsoft YaHei";
+	font-size: 14px;
+}
+
+.cs_host_ip {
+	color: #CCCCCC;
+	font-family: "Microsoft YaHei";
+	font-size: 14px;
+}
+
+.cs_argu_name {
+	color: #FFF;
+	font-family: "Microsoft YaHei";
+	font-size: 12px;
+}
+.cs_argu_val {
+	color: #CCCCCC;
+	font-family: "Microsoft YaHei";
+	font-size: 12px;
+}
+
+.cs_argu_page {
+	color: #CCCCCC;
+	font-family: "Microsoft YaHei";
+	font-size: 30px;
+	padding-right: 10px;
+}
+
+.mp_title {
+	color: #FFF;
+	font-family: "Microsoft YaHei";
+	font-size: 18px;
+}
+
+.sl_title {
+	color: #898989;
+	font-family: "Microsoft YaHei";
+	font-size: 14px;
+	padding-left: 20px;
+}
+
+.sl_nav_name {
+	color: #FFF;
+	font-family: "Microsoft YaHei";
+	font-size: 14px;
+	padding-left: 70px;
+}
+
+.sl_nav_title {
+	color: #FFF;
+	font-family: "Microsoft YaHei";
+	font-size: 18px;
+}
+
+.sl_form_title {
+	color: #898989;
+	font-family: "Microsoft YaHei";
+	font-size: 14px;
+	padding-left: 90px;
+}
+
+.tc_nav {
+	color: #FFF;
+	font-family: "Microsoft YaHei";
+	font-size: 14px;
+	padding-left: 15px;
+}
+
+.tc_chart_title {
+	color: #FFF;
+	font-family: "Microsoft YaHei";
+	font-size: 18px;
+}
+
+.tc_chart_color_title {
+	color: #FFF;
+	font-family: "Arial";
+	font-size: 12px;
+	padding-left: 10px;
+}
+
+.vm_node {
+	color: #FFF;
+	font-family: "Microsoft YaHei";
+	font-size: 12px;
+}
+

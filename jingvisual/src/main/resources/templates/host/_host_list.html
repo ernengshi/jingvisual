@@ -1,0 +1,185 @@
+<zone th:fragment="_list">
+    <script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/jquery.js}"></script>
+    <div class="rightcontent row">
+        <div id="hostList" class="col-md-12 col-sm-12 col-xs-12"> 
+            <!--<div  class="col-lg-3 col-md-4 col-sm-4 col-xs-6">-->
+            <!--<div id="hostList" class="col-lg-3 col-md-4 col-sm-4 col-xs-6" th:each="host, status: ${page.resultList}">--> 
+            <!--                <div class="loundSerivice">
+                                <div class="col-md-6 col-sm-6 col-xs-6" th:text="${host.name}">VHost01</div>
+                                <div class="col-md-6 col-sm-6 col-xs-6 text-right" th:text="${host.ip}">192.168.37.253</div>
+                                <div class="col-md-12 col-sm-12 col-xs-12"><div class="bule-line"></div></div> 
+                                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-2">CPU</div>
+                                <div class="col-lg-10 col-md-10 col-sm-9 col-xs-10" th:text="${host.cpu}">16*2.24&nbsp;GHZ&nbsp;(1.7%)</div> 
+                                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-2">内存</div>
+                                <div class="col-lg-10 col-md-10 col-sm-9 col-xs-10" th:text="${host.memory}">23.58&nbsp;GB&nbsp;(20%)</div>  
+                                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-2">网络</div>
+                                <div class="col-lg-10 col-md-10 col-sm-9 col-xs-10" th:text="${host.network}">1.45&nbsp;GB(r)&nbsp;153.5MB(W)</div> 
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" th:switch="${host.state}">
+                                    <div th:case="'Up'" th:class="normal">&nbsp;</div>
+                                    <div th:case="'Down'" th:class="waring">&nbsp;</div>
+                                    <div th:case="'Disconnected'" th:class="waring">&nbsp;</div>
+                                    <div th:case="'Alert'" th:class="waring">&nbsp;</div>
+                                    <div th:case="'Error'" th:class="danger">&nbsp;</div>
+                                    <div th:case="'Creating'" th:class="waring">&nbsp;</div>
+                                    <div th:case="'Connecting'" th:class="waring">&nbsp;</div>
+                                    <div th:case="'Removed'" th:class="waring">&nbsp;</div>
+                                    <div th:case="'Rebalancing'" th:class="waring">&nbsp;</div>
+                                    <div class="waring">&nbsp;</div>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" th:switch="${host.resourcestate}">
+                                    <div th:case="Enabled" th:class="normal">&nbsp;</div>
+                                    <div th:case="'Disabled'" th:class="waring">&nbsp;</div>
+                                    <div th:case="'Destroyed'" th:class="waring">&nbsp;</div>
+                                    <div th:case="'PrepareForMaintenance'" th:class="waring">&nbsp;</div>
+                                    <div th:case="'Maintenance'" th:class="waring">&nbsp;</div>
+                                    <div th:case="'ErrorInMaintenance'" th:class="danger">&nbsp;</div>
+                                    <div class="normal">&nbsp;</div>
+                                </div>
+                            </div>-->
+            <!--</div>--> 
+        </div>
+    </div>
+
+    <script th:inline="JavaScript">
+        /*<![CDATA[*/
+
+        function getHostState(state) {
+            var stateClass = "normal";
+            if ("Up" == state) {
+                stateClass = 'normal';
+            } else if ("Down" == state) {
+
+                stateClass = 'waring';
+            } else if ("Disconnected" == state) {
+
+                stateClass = 'waring';
+            } else if ("Alert" == state) {
+
+                stateClass = 'waring';
+            } else if ("Error" == state) {
+
+                stateClass = 'danger';
+            } else if ("Creating" == state) {
+
+                stateClass = 'waring';
+            } else if ("Connecting" == state) {
+
+                stateClass = 'waring';
+            } else if ("Removed" == state) {
+
+                stateClass = 'waring';
+            } else if ("Rebalancing" == state) {
+
+                stateClass = 'waring';
+            }
+            return  stateClass;
+
+        }
+
+
+
+
+        function getresourceState(state) {
+            var resourceState = "normal";
+            if ("Enabled" == state) {
+                resourceState = 'normal';
+            } else if ("Disabled" == state) {
+
+                resourceState = 'waring';
+            } else if ("Destroyed" == state) {
+
+                resourceState = 'waring';
+            } else if ("PrepareForMaintenance" == state) {
+
+                resourceState = 'waring';
+            } else if ("Maintenance" == state) {
+
+                resourceState = 'waring';
+            } else if ("ErrorInMaintenance" == state) {
+
+                resourceState = 'danger';
+            }
+            return  resourceState;
+
+        }
+
+
+        function fillHostHtml(list) {
+            var html = '';
+            $.each(list, function (index, host) {
+                var hostName = host.name;
+                var hostIp = host.ip;
+                var hostCpu = host.cpu;
+                var hostMemory = host.memory;
+                var hostNetwork = host.network;
+                var hoststate = host.state;
+                var resourcestate = host.resourcestate;
+                var host =
+                        '<div id="hostList" class="col-lg-3 col-md-4 col-sm-4 col-xs-6">' +
+                        '<div class="loundSerivice">' +
+                        '<div class="col-md-6 col-sm-6 col-xs-6">' + hostName + '</div>' +
+                        '<div class="col-md-6 col-sm-6 col-xs-6 text-right">' + hostIp + '</div>' +
+                        '<div class="col-md-12 col-sm-12 col-xs-12"><div class="bule-line"></div></div>' +
+                        '<div class="col-lg-2 col-md-2 col-sm-3 col-xs-2">CPU</div>' +
+                        '<div class="col-lg-10 col-md-10 col-sm-9 col-xs-10">' + hostCpu + '</div>' +
+                        '<div class="col-lg-2 col-md-2 col-sm-3 col-xs-2">内存</div>' +
+                        '<div class="col-lg-10 col-md-10 col-sm-9 col-xs-10">' + hostMemory + '</div>' +
+                        '<div class="col-lg-2 col-md-2 col-sm-3 col-xs-2">网络</div>' +
+                        '<div class="col-lg-10 col-md-10 col-sm-9 col-xs-10">' + hostNetwork + '</div>' +
+                        '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">' +
+                        '<div class="' + getHostState(hoststate) + '">&nbsp;</div>' + '</div>' +
+                        '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">' +
+                        '<div class="' + getresourceState(resourcestate) + '">&nbsp;</div>' + '</div>' +
+                        '</div>' +
+                        '</div> ';
+                html = host + html;
+            });
+            $("#hostList").html(html)
+
+        }
+
+        function getHosts(pageNo) {
+            $.ajax({
+                url: "/hosts_data/" + pageNo,
+                dataType: "json",
+                async: false,
+                success: function (json) {
+                    var list = json.resultList;
+                    fillHostHtml(list);
+                }
+            });
+        }
+        var pagecount;
+        function initPageCount() {
+            $.ajax({
+                url: "/hosts_data/1",
+                dataType: "json",
+                async: false,
+                success: function (json) {
+                    pagecount = json.pageCount;
+                }
+            });
+        }
+
+
+        var index = 1;
+        function letsGO() {
+            getHosts(index);
+            index++;
+            if (index > pagecount) {
+                index = 1;
+            }
+
+        }
+
+        $(function () {
+            initPageCount();
+            letsGO();
+            window.setInterval(function () {
+                return letsGO()
+            }, 3000);
+        });
+
+        /*]]>*/
+    </script>
+</zone>

@@ -1,0 +1,104 @@
+<zone th:fragment="_list">
+    <script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/jquery.js}"></script>
+    <script type="text/javascript" th:src="@{/js/lib/date.js}"></script>
+    <script type="text/javascript" th:src="@{/js/lib/utils.js}"></script>
+    <div class="rightcontent row">
+        <div id="gatewayList" class="col-md-12 col-sm-12 col-xs-12"> 
+            <!-- gateway status starts -->
+
+            <!-- gateway status ends -->
+        </div>
+    </div>
+
+    <script th:inline="JavaScript">
+        /*<![CDATA[*/
+
+        function getGateWayClass(online) {
+            var c = "";
+
+            if ("running" == (online)) {
+                c = "normal";
+            } else if ("stoping" == (online)) {
+                c = "resume";
+            }
+            return c;
+        }
+
+
+
+
+
+
+        function fillGateWayHtml(list) {
+            var html = '';
+            $.each(list, function (index, gateway) {
+                var hostname = gateway.hostname;
+                var ip = gateway.ip;
+                var load_balance = gateway.load_balance;
+                var connections = gateway.connections;
+                var end = toLocalDate(gateway.end);
+                var online = gateway.online;
+                var state = gateway.state;
+
+                var gateway = '<div class="col-lg-3 col-md-4 col-sm-4 col-xs-6">' +
+                        '<div class="gateway">' +
+                        '<div class="col-md-6 col-sm-6 col-xs-6">' + hostname + '</div>' +
+                        '<div class="col-md-6 col-sm-6 col-xs-6 text-right">' + ip + '</div>' +
+                        '<div class="col-md-12 col-sm-12 col-xs-12"><div class="bule-line"></div></div>' +
+                        '<div class="col-md-12 col-sm-12 col-xs-12">LoadDLS &nbsp;&nbsp;' + load_balance + '</div> ' +
+                        '<div class="col-md-12 col-sm-12 col-xs-12">接入数量 &nbsp;&nbsp;' + connections + '</div>  ' +
+                        '<div class="col-md-12 col-sm-12 col-xs-12">最后活动时间  &nbsp;&nbsp;' + end + '</div>' +
+                        '<div class="col-md-12 col-sm-12 col-xs-12"><div class="' + getGateWayClass(online) + '">&nbsp;</div></div>' +
+                        '</div>' +
+                        '</div>';
+                html = html + gateway;
+
+            });
+            $("#gatewayList").html(html)
+        }
+
+        function getGateWays(pageNo) {
+            $.ajax({
+                url: "/gateways_data/" + pageNo,
+                dataType: "json",
+                async: false,
+                success: function (json) {
+                    var list = json.resultList;
+                    fillGateWayHtml(list);
+                }
+            });
+        }
+        var pagecount;
+        function initPageCount() {
+            $.ajax({
+                url: "/gateways_data/1",
+                dataType: "json",
+                async: false,
+                success: function (json) {
+                    pagecount = json.pageCount;
+                }
+            });
+        }
+
+
+        var index = 1;
+        function letsGO() {
+            getGateWays(index);
+            index++;
+            if (index > pagecount) {
+                index = 1;
+            }
+
+        }
+
+        $(function () {
+            initPageCount();
+            letsGO();
+//            window.setInterval(function () {
+//                return letsGO()
+//            }, 3000);
+        });
+
+        /*]]>*/
+    </script>
+</zone>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html  xmlns="http://www.w3.org/1999/xhtml"
+
+       xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+            <link rel='stylesheet' th:href='@{/webjars/zTree/css/demo.css}'/>
+            <link rel="stylesheet" th:href='@{/webjars/zTree/css/zTreeStyle/zTreeStyle.css}' />
+            <script type="text/javascript" th:src="@{/webjars/jquery/2.2.4/jquery.js}"></script>
+            <script type="text/javascript" th:src="@{/webjars/zTree/js/jquery.ztree.core.js}"></script>
+
+
+            <script th:inline="JavaScript">
+                /*<![CDATA[*/
+                var setting = {
+                    data: {
+                        simpleData: {
+                            enable: true,
+                            idKey: "id",
+                            pIdKey: "pId",
+                            rootPId: 0
+                        }
+                    },
+                    async: {
+                        enable: true,
+//                        url: "/ztree_data",
+                        type: "get",
+                        url: "/vm_group",
+                        autoParam: ["id=gid", "name=name", "level=level"],
+//                        otherParam: {"otherParam": "zTreeAsyncTest"},
+//                        dataFilter: filter
+                    }
+                };
+
+                function filter(treeId, parentNode, childNodes) {
+                    if (!childNodes)
+                        return null;
+                    for (var i = 0, l = childNodes.length; i < l; i++) {
+                        childNodes[i].name = childNodes[i].name.replace(/\.n/g, '.');
+                    }
+                    return childNodes;
+                }
+
+                $(document).ready(function () {
+                    $.fn.zTree.init($("#treeDemo"), setting);
+                });
+                /*]]>*/
+            </script>
+    </head>
+    <body>
+        <h1>异步加载节点数据的树</h1>
+        <h6>[ 文件路径: core/async.html ]</h6>
+        <div class="content_wrap">
+            <div class="zTreeDemoBackground left">
+                <ul id="treeDemo" class="ztree"></ul>
+            </div>
+        </div>
+    </body>
+</html>
